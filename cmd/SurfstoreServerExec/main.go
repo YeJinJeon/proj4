@@ -45,7 +45,7 @@ func main() {
 	// Use tail arguments to hold BlockStore address
 	args := flag.Args()
 	blockStoreAddrs := make([]string, 0)
-	if len(args) > 1 {
+	if len(args) >= 1 {
 		for i, _ := range args {
 			blockStoreAddrs = append(blockStoreAddrs, args[i])
 		}
