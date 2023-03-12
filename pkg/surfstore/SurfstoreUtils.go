@@ -3,7 +3,6 @@ package surfstore
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -32,7 +31,7 @@ func ClientSync(client RPCClient) {
 		indexFile, _ := os.Create(idx_file)
 		indexFile.Close()
 	}
-	fmt.Println("============= Before Sync local directory ===========")
+	//fmt.Println("============= Before Sync local directory ===========")
 	local_metaData, err := LoadMetaFromMetaFile(base_dir)
 	if err != nil {
 		log.Println("Error during loading local meta data", err)
@@ -40,7 +39,7 @@ func ClientSync(client RPCClient) {
 	//PrintMetaMap(local_metaData)
 
 	//Sync local
-	fmt.Println("====================== Sync Local =======================")
+	//fmt.Println("====================== Sync Local =======================")
 	curr_files, err := ioutil.ReadDir(client.BaseDir)
 	if err != nil {
 		log.Println("Error during reading basedir: ", err)
@@ -51,7 +50,7 @@ func ClientSync(client RPCClient) {
 		if curr_f.Name() == "index.db" {
 			continue
 		}
-		fmt.Print("Working on ", curr_f.Name(), " ")
+		//fmt.Print("Working on ", curr_f.Name(), " ")
 
 		// open file
 		fi, err := os.Open(filepath.Join(base_dir, curr_f.Name()))
@@ -83,9 +82,9 @@ func ClientSync(client RPCClient) {
 			if !stringSlicesEqual(meta_hash.BlockHashList, local_hash[curr_f.Name()]) { //update FileMetaData
 				local_metaData[curr_f.Name()].Version += 1
 				local_metaData[curr_f.Name()].BlockHashList = local_hash[curr_f.Name()]
-				fmt.Println("Update existing file on local db")
+				//fmt.Println("Update existing file on local db")
 			} else {
-				fmt.Println("Same with a existing file on local db")
+				//fmt.Println("Same with a existing file on local db")
 			}
 		} else { // new file
 			fmd := FileMetaData{
@@ -94,7 +93,7 @@ func ClientSync(client RPCClient) {
 				BlockHashList: local_hash[curr_f.Name()],
 			}
 			local_metaData[curr_f.Name()] = &fmd
-			fmt.Println("Create new file on local db")
+			//fmt.Println("Create new file on local db")
 		}
 	}
 
@@ -102,7 +101,7 @@ func ClientSync(client RPCClient) {
 	for metafile, metaData := range local_metaData { //before sync
 		if _, ok := local_hash[metafile]; !ok { //current
 			if len(metaData.BlockHashList) != 1 || metaData.BlockHashList[0] != "0" {
-				fmt.Printf("Working on %s Update deleted file on local db\n", metafile)
+				//fmt.Printf("Working on %s Update deleted file on local db\n", metafile)
 				deleted_hash := []string{"0"}
 				local_metaData[metafile].Version += 1
 				local_metaData[metafile].BlockHashList = deleted_hash
@@ -132,7 +131,7 @@ func ClientSync(client RPCClient) {
 	}
 
 	// check if server has updated or new file
-	fmt.Println("================= Sync with Remote directory =================")
+	//fmt.Println("================= Sync with Remote directory =================")
 	flag := false
 	for sf, sfmd := range server_index {
 		if lfmd, ok := local_metaData[sf]; ok {
@@ -172,15 +171,15 @@ func ClientSync(client RPCClient) {
 		// 	log.Println("Error during loading local meta data", err)
 		// }
 		// PrintMetaMap(local_metaData3)
-	} else {
-		fmt.Println("No updates on Remote directory")
-	}
+	} //else {
+	//fmt.Println("No updates on Remote directory")
+	//}
 
 	// get consistent hash ring
 	hashRing := NewConsistentHashRing(blockStoreAddrs)
 
 	// check if local has updated or new file
-	fmt.Println("================= Sync local changes to Remote directory =================")
+	//fmt.Println("================= Sync local changes to Remote directory =================")
 	for lf, lfmd := range local_metaData {
 		if _, ok := server_index[lf]; ok {
 			if lfmd.Version > server_index[lf].Version {
@@ -209,11 +208,11 @@ func ClientSync(client RPCClient) {
 func upload_block(client RPCClient, localdir string, localfile string, consistenthashRing *ConsistentHashRing) error {
 
 	if _, err := os.Stat(filepath.Join(localdir, localfile)); errors.Is(err, os.ErrNotExist) {
-		fmt.Println("No file to upload!")
+		//fmt.Println("No file to upload!")
 		return err
 	}
 
-	fmt.Printf("uploading %s to server\n", localfile)
+	//fmt.Printf("uploading %s to server\n", localfile)
 	f, err := os.Open(filepath.Join(localdir, localfile))
 	if err != nil {
 		log.Println("Error during uploading to server(opening): ", err)
@@ -246,7 +245,7 @@ func upload_block(client RPCClient, localdir string, localfile string, consisten
 }
 
 func download_block(client RPCClient, localdir string, remotefile string, remotefileMetadata *FileMetaData, blockStoreMap map[string][]string) error {
-	fmt.Printf("Downloading %s from server\n", remotefile)
+	//fmt.Printf("Downloading %s from server\n", remotefile)
 	f, err := os.Create(filepath.Join(localdir, remotefile))
 	if err != nil {
 		log.Println("Error creating file: ", err)

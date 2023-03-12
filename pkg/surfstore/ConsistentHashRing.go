@@ -3,7 +3,6 @@ package surfstore
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"sort"
 )
 
@@ -46,6 +45,5 @@ func NewConsistentHashRing(serverAddrs []string) *ConsistentHashRing {
 		serverMap[serverHash] = serverAddr
 	}
 	cHashRing.ServerMap = serverMap
-	fmt.Println(cHashRing.ServerMap)
 	return &cHashRing
 }
