@@ -74,7 +74,8 @@ func main() {
 }
 
 func startServer(hostAddr string, serviceType string, blockStoreAddrs []string) error {
-	fmt.Println(blockStoreAddrs)
+
+	//fmt.Println(blockStoreAddrs)
 	// Create a server
 	grpcServer := grpc.NewServer()
 	// Register rpc services

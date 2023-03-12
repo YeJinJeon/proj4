@@ -37,7 +37,7 @@ func ClientSync(client RPCClient) {
 	if err != nil {
 		log.Println("Error during loading local meta data", err)
 	}
-	PrintMetaMap(local_metaData)
+	//PrintMetaMap(local_metaData)
 
 	//Sync local
 	fmt.Println("====================== Sync Local =======================")
@@ -112,12 +112,12 @@ func ClientSync(client RPCClient) {
 
 	//update local index.db
 	WriteMetaFile(local_metaData, client.BaseDir)
-	fmt.Println("================= After Sync local directory =================")
-	local_metaData2, err := LoadMetaFromMetaFile(base_dir)
-	if err != nil {
-		log.Println("Error during loading local meta data", err)
-	}
-	PrintMetaMap(local_metaData2)
+	// fmt.Println("================= After Sync local directory =================")
+	// local_metaData2, err := LoadMetaFromMetaFile(base_dir)
+	// if err != nil {
+	// 	log.Println("Error during loading local meta data", err)
+	// }
+	//PrintMetaMap(local_metaData2)
 
 	// get server file info
 	server_index := make(map[string]*FileMetaData)
@@ -167,11 +167,11 @@ func ClientSync(client RPCClient) {
 	//update local index.db
 	if flag {
 		WriteMetaFile(local_metaData, client.BaseDir)
-		local_metaData3, err := LoadMetaFromMetaFile(base_dir)
-		if err != nil {
-			log.Println("Error during loading local meta data", err)
-		}
-		PrintMetaMap(local_metaData3)
+		// local_metaData3, err := LoadMetaFromMetaFile(base_dir)
+		// if err != nil {
+		// 	log.Println("Error during loading local meta data", err)
+		// }
+		// PrintMetaMap(local_metaData3)
 	} else {
 		fmt.Println("No updates on Remote directory")
 	}
